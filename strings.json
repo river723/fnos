@@ -1,0 +1,10 @@
+// {
+//   "switch.reboot": {
+//     "name": "重启设备",
+//     "icon": "mdi:restart"
+//   },
+//   "switch.shutdown": {
+//     "name": "关闭设备",
+//     "icon": "mdi:power"
+//   }
+// }

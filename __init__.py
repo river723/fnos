@@ -11,9 +11,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data[DOMAIN][entry.entry_id] = coordinator
     
     # 触发传感器平台加载
-    await hass.config_entries.async_forward_entry_setup(entry, "sensor")
+    await hass.config_entries.async_forward_entry_setups(entry, ["sensor", "switch"])
     return True
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
-    return await hass.config_entries.async_forward_entry_unload(entry, "sensor")
+    # 修改为同时卸载 sensor 和 switch 平台
+    return await hass.config_entries.async_forward_entry_unload(entry, "sensor") and \
+       await hass.config_entries.async_forward_entry_unload(entry, "switch")
