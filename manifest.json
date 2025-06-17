@@ -10,9 +10,8 @@
   "issue_tracker": "https://github.com/river723/fnos/issues",
   "version": "1.00",
   "supported_platforms": ["sensor", "switch"],
- 
+  "_translations_bak": {
+    "switch.reboot": "switch.reboot",
+    "switch.shutdown": "switch.shutdown"
 }
-//  "translations": {
-//     "switch.reboot": "switch.reboot",
-//     "switch.shutdown": "switch.shutdown"
-// }
+}
