@@ -6,6 +6,7 @@ FNOS 传感器模块，用于通过 SSH 获取远程服务器状态（CPU、内�
 import logging
 import paramiko
 import backoff 
+import time
 from datetime import timedelta
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.helpers.entity import DeviceInfo
@@ -68,6 +69,8 @@ class FnosDataCoordinator(DataUpdateCoordinator):
         )
         self.config_entry = config_entry
         self.ssh = None  # 缓存 SSH 连接
+        self._last_net_stats = None  # (rx_bytes, tx_bytes)
+        self._last_update_time = None
     async def connect_ssh(self):
         """建立或复用 SSH 连接"""
         if self.ssh and self._is_ssh_active():
@@ -119,7 +122,8 @@ class FnosDataCoordinator(DataUpdateCoordinator):
             stdin, stdout, stderr = await self.hass.async_add_executor_job(
                 self.ssh.exec_command, "echo \"CPU:$(top -bn1 | grep 'Cpu(s)' | awk '{print $2 + $4}');"
                 "MEMORY:$(free | awk 'NR==2{printf \"%.1f\", $3/$2 * 100}');"
-                "DISK:$(df --output=pcent / | awk 'NR==2{print $1}' | tr -d '%')\""
+                "DISK:$(df --output=pcent / | awk 'NR==2{print $1}' | tr -d '%');"
+                "NET:$(cat /proc/net/dev | grep ens18 | awk '{print $2, $10}')\""
             )
 
             output = stdout.read().decode().strip()
@@ -130,7 +134,22 @@ class FnosDataCoordinator(DataUpdateCoordinator):
                 if ':' in item:
                     key, value = item.split(':', 1)
                     try:
-                        data[key.lower()] = float(value)
+                        if key == 'NET':
+                            rx_bytes, tx_bytes = map(int, value.strip().split())
+                            now = time.time()
+
+                            if self._last_net_stats and self._last_update_time:
+                                rx_diff = rx_bytes - self._last_net_stats[0]
+                                tx_diff = tx_bytes - self._last_net_stats[1]
+                                interval = now - self._last_update_time
+
+                                data['download_speed'] = round(rx_diff / interval / 1_000_000, 2)
+                                data['upload_speed'] = round(tx_diff / interval / 1_000_000, 2)
+
+                            self._last_net_stats = (rx_bytes, tx_bytes)
+                            self._last_update_time = now
+                        else:
+                            data[key.lower()] = float(value)
                     except ValueError:
                         _LOGGER.warning(f"无法解析数据项: {item}")
             return data

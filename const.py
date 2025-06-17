@@ -12,6 +12,9 @@ CONF_SCAN_INTERVAL = "scan_interval"
 SENSOR_TYPES = {
     "cpu": ["CPU Usage", "%", "mdi:cpu-64-bit"],
     "memory": ["Memory Usage", "%", "mdi:memory"],
-    "disk": ["Disk Usage", "%", "mdi:harddisk"]
+    "disk": ["Disk Usage", "%", "mdi:harddisk"],
+    # 新增：下载和上传速度
+    "download_speed": ["Download Speed", "MB/s", "mdi:download"],
+    "upload_speed": ["Upload Speed", "MB/s", "mdi:upload"],
 }
 
