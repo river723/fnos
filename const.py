@@ -16,5 +16,9 @@ SENSOR_TYPES = {
     # 新增：下载和上传速度
     "download_speed": ["Download Speed", "MB/s", "mdi:download"],
     "upload_speed": ["Upload Speed", "MB/s", "mdi:upload"],
+    # 新增系统运行时间
+    "uptime": ["System Uptime", "hours", "mdi:clock-start"],
+    # 新增 CPU 温度
+    "cpu_temperature": ["CPU Temperature", "°C", "mdi:thermometer"],
 }
 

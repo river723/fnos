@@ -123,7 +123,9 @@ class FnosDataCoordinator(DataUpdateCoordinator):
                 self.ssh.exec_command, "echo \"CPU:$(top -bn1 | grep 'Cpu(s)' | awk '{print $2 + $4}');"
                 "MEMORY:$(free | awk 'NR==2{printf \"%.1f\", $3/$2 * 100}');"
                 "DISK:$(df --output=pcent / | awk 'NR==2{print $1}' | tr -d '%');"
-                "NET:$(cat /proc/net/dev | grep ens18 | awk '{print $2, $10}')\""
+                "NET:$(cat /proc/net/dev | grep ens18 | awk '{print $2, $10}');"
+                "UPTIME:$(cat /proc/uptime | awk '{printf \"%d\", $1/3600}\');"
+                "CPU_TEMP:$(sensors | grep 'Package id 0' | awk '{print substr($4, 2)}' | tr -d '°C')\""
             )
 
             output = stdout.read().decode().strip()
@@ -134,7 +136,11 @@ class FnosDataCoordinator(DataUpdateCoordinator):
                 if ':' in item:
                     key, value = item.split(':', 1)
                     try:
-                        if key == 'NET':
+                        if key == 'UPTIME':
+                            data['uptime'] = int(value.strip())
+                        elif key == 'CPU_TEMP':
+                            data['cpu_temperature'] = float(value.strip())
+                        elif key == 'NET':
                             rx_bytes, tx_bytes = map(int, value.strip().split())
                             now = time.time()
 
@@ -190,7 +196,11 @@ class FnosSensor(CoordinatorEntity, SensorEntity):
         sensor_names = {
             'cpu': 'CPU 使用率',
             'memory': '内存使用率',
-            'disk': '磁盘使用率'
+            'disk': '磁盘使用率',
+            'download_speed': '下载速度',
+            'upload_speed': '上传速度',
+            'uptime': '系统运行时间',
+            'cpu_temperature': 'CPU 温度'
         }
         self._attr_name = sensor_names.get(sensor_type, sensor_type) #f"FNOS {SENSOR_TYPES[sensor_type][0]}"
         self._attr_unique_id = f"{config_entry.entry_id}_{sensor_type}"
