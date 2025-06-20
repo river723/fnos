@@ -20,6 +20,7 @@ async def register_disk_devices(hass, config_entry, disks):
             name=f"mdi:harddisk {disk['name']}",
             manufacturer="Generic",
             model="HDD/SSD",
+            icon="mdi:harddisk",
             via_device=(config_entry.domain, config_entry.entry_id),
         )
 

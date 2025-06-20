@@ -60,7 +60,7 @@ class FnosDataCoordinator(DataUpdateCoordinator):
 
             stdin, stdout, stderr = await self.hass.async_add_executor_job(
                 self.ssh.exec_command,
-                "echo \"CPU:$(top -bn1 | grep 'Cpu(s)' | awk '{print $2 + $4}');"
+                "echo \"CPU:$(top -b -n1 | fgrep \"Cpu(s)\" | tail -1 | awk -F'id,' '{split($1, vs, \",\"); v=vs[length(vs)]; sub(/\\s+/, \"\", v);sub(/\\s+/, \"\", v); printf \"%s\", 100-v; }');"
                 "MEMORY:$(free | awk 'NR==2{printf \"%.1f\", $3/$2 * 100}');"
                 "DISK:$(df --output=pcent / | awk 'NR==2{print $1}' | tr -d '%');"
                 "NET:$(cat /proc/net/dev | grep ens18 | awk '{print $2, $10}');"
