@@ -27,6 +27,9 @@ async def async_setup_entry(
     """设置开关实体"""
     coordinator = hass.data[DOMAIN][config_entry.entry_id]
 
+    # 等待协调器完成首次数据刷新
+    await coordinator.async_config_entry_first_refresh()
+    
     switches = []
     for switch_type in SWITCH_TYPES:
         switches.append(FnosSwitch(coordinator, switch_type, config_entry.entry_id, config_entry))

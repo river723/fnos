@@ -20,5 +20,6 @@ SENSOR_TYPES = {
     "uptime": ["System Uptime", "hours", "mdi:clock-start"],
     # 新增 CPU 温度
     "cpu_temperature": ["CPU Temperature", "°C", "mdi:thermometer"],
+    
 }
 
