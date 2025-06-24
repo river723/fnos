@@ -99,3 +99,4 @@ class DiskInfoEntity(CoordinatorEntity, SensorEntity):
             if disk["name"] == self.disk_name:
                 return disk["size"]
         return None
+        
