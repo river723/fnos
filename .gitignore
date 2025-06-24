@@ -1,1 +1,4 @@
-__pycache__/
+venv
+config
+.vscode
+fnos/__pycache__/
