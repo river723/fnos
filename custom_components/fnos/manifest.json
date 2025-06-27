@@ -10,9 +10,6 @@
   "requirements": ["paramiko>=3.0.0","backoff>=1.0.0"],
   "issue_tracker": "https://github.com/river723/fnos/issues",
   "version": "1.00",
-  "supported_platforms": ["sensor", "switch"],
-  "_translations_bak": {
-    "switch.reboot": "switch.reboot",
-    "switch.shutdown": "switch.shutdown"
-}
+  "supported_platforms": ["sensor", "button"]
+  
 }

@@ -6,13 +6,13 @@ from .const import DOMAIN
 from .coordinator import FnosDataCoordinator
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """初始化主协调器并 forward 到 sensor 和 switch"""
+    """初始化主协调器并 forward 到 sensor 和 button"""
     hass.data.setdefault(DOMAIN, {})
 
     coordinator = FnosDataCoordinator(hass, entry)
     hass.data[DOMAIN][entry.entry_id] = coordinator
 
-    await hass.config_entries.async_forward_entry_setups(entry, ["sensor", "switch"])
+    await hass.config_entries.async_forward_entry_setups(entry, ["sensor", "button"])
     return True
 
 
