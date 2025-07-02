@@ -60,16 +60,6 @@
 custom_components/fnos/
 ```
 
-确保包含以下关键文件：
-- [__init__.py](file:///home/hwg/ha_dev/config/custom_components/fnos/__init__.py)
-- [manifest.json](file:///home/hwg/ha_dev/config/custom_components/fnos/manifest.json)
-- [const.py](file:///home/hwg/ha_dev/config/custom_components/fnos/const.py)
-- [coordinator.py](file:///home/hwg/ha_dev/config/custom_components/fnos/coordinator.py)
-- [sensor.py](file:///home/hwg/ha_dev/config/custom_components/fnos/sensor.py)
-- [button.py](file:///home/hwg/ha_dev/config/custom_components/fnos/button.py)（如有）
-
-> ⚠️ 如果没有启用开发者模式，请在 Home Assistant 设置中开启“开发者选项”。
-
 ---
 
 #### 2. 添加集成
@@ -117,7 +107,7 @@ custom_components/fnos/
 | 📊 实时监控 | 获取 FNOS 的 CPU、内存、磁盘、温度、网络等指标 |
 | ⚙️ 配置流支持 | 支持通过 HA UI 配置连接参数 |
 | 🔄 自动刷新 | 数据定时刷新（默认每 5 分钟一次，可在配置中调整） |
-| 🔘 控制按钮（可选） | 如支持，可通过按钮执行关机、重启等操作 |
+| 🔘 控制按钮 | 可通过按钮执行关机、重启等操作 |
 
 ---
 
@@ -144,4 +134,3 @@ custom_components/fnos/
 
 --- 
 
-如需我帮你生成一个完整的 [hacs.json](file:///home/hwg/ha_dev/hacs.json) 或打包 zip 文件模板以便发布，也可以告诉我！
