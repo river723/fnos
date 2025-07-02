@@ -1,6 +1,3 @@
-以下是根据你的项目结构和功能，重新编写并补充 **通过 HACS 安装** 内容后的 `README.md`：
-
----
 
 # 📦 FNOS Home Assistant 集成
 
