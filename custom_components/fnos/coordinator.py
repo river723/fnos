@@ -19,7 +19,7 @@ UPTIME:$(cat /proc/uptime | awk '{printf "%d", $1/3600}');
 CPU_TEMP:$(sensors | grep -m 1 'Package id 0' | awk '{print substr($4, 2)}' | tr -d '°C' || echo 0);
 DISK_INFO:$(lsblk -d -o NAME,SIZE --json);
 DISK_IO:$(cat /proc/diskstats);
-DISK_TEMPS:$(for disk in $(lsblk -d -o NAME | grep sd); do echo -n "$disk:"; smartctl -A /dev/$disk | grep Temperature_Celsius | awk '{print $10}' || echo 0; done)"
+DISK_TEMPS:$(for disk in $(lsblk -d -o NAME | grep sd); do echo -n "$disk:"; sudo smartctl -A /dev/$disk | grep Temperature_Celsius | awk '{print $10}' || echo 0; done)"
 '''
 
 class FnosDataCoordinator(DataUpdateCoordinator):
@@ -80,6 +80,7 @@ class FnosDataCoordinator(DataUpdateCoordinator):
             _LOGGER.debug("命令输出: %s", output)
 
             data = self._parse_output(output)
+            self._last_update_time = time.time()
 
             return data
 
@@ -125,7 +126,7 @@ class FnosDataCoordinator(DataUpdateCoordinator):
     def _parse_disk_io(self, data, value):
         lines = value.strip().split("\n")
         io_stats = {}
-
+        interval=1
         for line in lines:
             parts = line.split()
             if len(parts) > 13:
@@ -135,17 +136,41 @@ class FnosDataCoordinator(DataUpdateCoordinator):
                 io_stats[device] = (read_sectors, write_sectors)
 
         now = time.time()
+        speeds = {}
+
         if self._last_disk_io and self._last_update_time:
-            speeds = {}
-            interval = now - self._last_update_time
+            interval = max(now - self._last_update_time, 0.5)
+
             for dev, (r, w) in io_stats.items():
                 last_r, last_w = self._last_disk_io.get(dev, (0, 0))
-                speeds[dev] = (
-                    round((r - last_r) * 512 / interval / 1_000_000, 2),
-                    round((w - last_w) * 512 / interval / 1_000_000, 2),
-                )
-            data["disk_speeds"] = speeds
+                try:
+                    read_speed = round((r - last_r) * 512 / interval / 1_000_000, 2)
+                    write_speed = round((w - last_w) * 512 / interval / 1_000_000, 2)
+
+                    # 添加合理性判断（比如单次读取不能超过 10GB 扇区变化）
+                    if abs(r - last_r) > 20_000_000:  # 超过 10GB 扇区变化，不合理
+                        _LOGGER.warning(f"检测到不合理扇区变化（{dev}）: {abs(r - last_r)} sectors")
+                        speeds[dev] = (0.0, 0.0)
+                    else:
+                        speeds[dev] = (read_speed, write_speed)
+                except Exception as e:
+                    _LOGGER.warning(f"计算磁盘 {dev} 速度失败: {e}")
+                    speeds[dev] = (0.0, 0.0)
+        else:
+            _LOGGER.debug("首次更新，不计算磁盘 IO 速度")
+
+ 
+
+        data["disk_speeds"] = speeds
         self._last_disk_io = io_stats
+        
+
+        # 调试日志
+        # _LOGGER.debug("本次磁盘IO: %s", io_stats)
+        # _LOGGER.debug("上次磁盘IO: %s", self._last_disk_io)
+        _LOGGER.debug("时间间隔: %.2f 秒", interval)
+        
+    
 
     def _parse_disk_temps(self, data, value):
         temps = {}
@@ -183,7 +208,7 @@ class FnosDataCoordinator(DataUpdateCoordinator):
                     (tx_bytes - self._last_net_stats[1]) * 512 / interval / 1_000_000, 2
                 )
             self._last_net_stats = (rx_bytes, tx_bytes)
-            self._last_update_time = now
+            # self._last_update_time = now
         except Exception as e:
             _LOGGER.warning("解析 NET 失败: %s", e)
 

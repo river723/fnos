@@ -2,6 +2,7 @@
 
 from homeassistant.components.button import ButtonEntity
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity import EntityCategory
 from .const import CONF_PASSWORD, DOMAIN
 import logging
 
@@ -54,6 +55,20 @@ class FnosButton(ButtonEntity):
     @property
     def unique_id(self):
         return f"{self._entry_id}_{self._button_type}"
+    
+    @property
+    def entity_category(self):  
+        return EntityCategory.CONFIG
+        
+    @property
+    def device_info(self):
+        return {
+            "identifiers": {(DOMAIN, self._entry_id)},  # 👈 必须与集成主设备的 identifiers 一致
+            "name": "FNOS NAS",
+            "manufacturer": "FNOS",
+            "model": "NAS",
+            "sw_version": "1.0"
+        }
 
     async def async_press(self):
         """通过 SSH 执行重启或关机命令"""
