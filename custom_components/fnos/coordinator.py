@@ -139,7 +139,7 @@ class FnosDataCoordinator(DataUpdateCoordinator):
         speeds = {}
 
         if self._last_disk_io and self._last_update_time:
-            interval = max(now - self._last_update_time, 30)
+            interval = max(now - self._last_update_time, 300)
 
             for dev, (r, w) in io_stats.items():
                 last_r, last_w = self._last_disk_io.get(dev, (0, 0))
