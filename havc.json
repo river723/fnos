@@ -1,0 +1,6 @@
+{
+  "name": "FNOS",
+  "homeassistant": "0.110.0"
+  "codeowners": ["@river723"],
+  "render_readme": true
+}
