@@ -1,0 +1,7 @@
+{
+    "name": "FNOS Monitor",
+    "hide_default_branch": false,
+    "zip_release": true,
+    "filename": "fnos.zip",
+    "render_readme": true
+}
