@@ -45,7 +45,9 @@ class FnosConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
 class FnosOptionsFlow(config_entries.OptionsFlow):
     def __init__(self, config_entry):
-        self.config_entry = config_entry
+        """Initialize options flow."""
+        super().__init__()
+        self._config_entry = config_entry
 
     async def async_step_init(self, user_input=None):
         if user_input is not None:
@@ -54,23 +56,23 @@ class FnosOptionsFlow(config_entries.OptionsFlow):
         options_schema = vol.Schema({
             vol.Optional(
                 CONF_HOST,
-                default=self.config_entry.options.get(CONF_HOST) or self.config_entry.data.get(CONF_HOST)
+                default=self._config_entry.options.get(CONF_HOST) or self._config_entry.data.get(CONF_HOST)
             ): str,
             vol.Optional(
                 CONF_USERNAME,
-                default=self.config_entry.options.get(CONF_USERNAME) or self.config_entry.data.get(CONF_USERNAME)
+                default=self._config_entry.options.get(CONF_USERNAME) or self._config_entry.data.get(CONF_USERNAME)
             ): str,
             vol.Optional(
                 CONF_PASSWORD,
-                default=self.config_entry.options.get(CONF_PASSWORD) or self.config_entry.data.get(CONF_PASSWORD)
+                default=self._config_entry.options.get(CONF_PASSWORD) or self._config_entry.data.get(CONF_PASSWORD)
             ): str,
             vol.Optional(
                 CONF_PORT,
-                default=self.config_entry.options.get(CONF_PORT) or self.config_entry.data.get(CONF_PORT, DEFAULT_PORT)
+                default=self._config_entry.options.get(CONF_PORT) or self._config_entry.data.get(CONF_PORT, DEFAULT_PORT)
             ): int,
             vol.Optional(
                 CONF_SCAN_INTERVAL,
-                default=self.config_entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+                default=self._config_entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
             ): int,
         })
 
