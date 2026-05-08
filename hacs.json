@@ -1,13 +1,12 @@
 {
   "name": "FNOS Monitor",
   "content_in_root": false,
-  "render_readme": true,
-  "domains": ["fnos"],
-  "homeassistant": "2021.1.0",
-  "hacs": "1.0.0",
-  "hide_default_branch": true,
-  "persistent_directory": null,
-  "zip_release": true,
-  "filename": "fnos.zip",
-  "release_url": "https://github.com/river723/fnos/releases/tag/v1.2.1"
+  "domain": "fnos",
+  "description": "飞牛NAS (FNOS) 监控系统 - 通过 SSH 获取 CPU、内存、磁盘使用率和网络速度等数据，支持远程重启和关机操作",
+  "issue_tracker": "https://github.com/river723/fnos/issues",
+  "documentation": "https://github.com/river723/fnos",
+  "dependencies": [],
+  "codeowners": ["@river723"],
+  "version": "1.2.1",
+  "requirements": ["paramiko>=3.0.0", "backoff>=1.0.0"]
 }
