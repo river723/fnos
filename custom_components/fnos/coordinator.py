@@ -48,10 +48,14 @@ class FnosDataCoordinator(DataUpdateCoordinator):
             self.ssh = paramiko.SSHClient()
             self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-            host = self.config_entry.data["host"]
-            port = self.config_entry.data.get("port", 22)
-            username = self.config_entry.data["username"]
-            password = self.config_entry.data.get("password")
+            # 优先使用 options 中的配置，如果没有则使用 data 中的配置
+            config_data = self.config_entry.data
+            config_options = self.config_entry.options
+
+            host = config_options.get("host") or config_data["host"]
+            port = config_options.get("port") or config_data.get("port", 22)
+            username = config_options.get("username") or config_data["username"]
+            password = config_options.get("password") or config_data.get("password")
 
             await self.hass.async_add_executor_job(
                 self.ssh.connect, host, port, username, password, None, None, None, 10

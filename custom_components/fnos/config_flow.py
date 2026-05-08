@@ -53,6 +53,22 @@ class FnosOptionsFlow(config_entries.OptionsFlow):
 
         options_schema = vol.Schema({
             vol.Optional(
+                CONF_HOST,
+                default=self.config_entry.options.get(CONF_HOST) or self.config_entry.data.get(CONF_HOST)
+            ): str,
+            vol.Optional(
+                CONF_USERNAME,
+                default=self.config_entry.options.get(CONF_USERNAME) or self.config_entry.data.get(CONF_USERNAME)
+            ): str,
+            vol.Optional(
+                CONF_PASSWORD,
+                default=self.config_entry.options.get(CONF_PASSWORD) or self.config_entry.data.get(CONF_PASSWORD)
+            ): str,
+            vol.Optional(
+                CONF_PORT,
+                default=self.config_entry.options.get(CONF_PORT) or self.config_entry.data.get(CONF_PORT, DEFAULT_PORT)
+            ): int,
+            vol.Optional(
                 CONF_SCAN_INTERVAL,
                 default=self.config_entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
             ): int,
