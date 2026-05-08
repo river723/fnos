@@ -1,0 +1,13 @@
+{
+  "name": "FNOS Monitor",
+  "content_in_root": false,
+  "render_readme": true,
+  "domains": ["fnos"],
+  "homeassistant": "2021.1.0",
+  "hacs": "1.0.0",
+  "hide_default_branch": true,
+  "persistent_directory": null,
+  "zip_release": true,
+  "filename": "fnos.zip",
+  "release_url": "https://github.com/river723/fnos/releases/tag/v1.2.0"
+}
